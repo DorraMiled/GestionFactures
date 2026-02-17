@@ -153,44 +153,21 @@ Interface minimaliste et intuitive avec:
 ### Fonctionnalités détaillées
 
 #### 1️⃣ Gestion des clients
-- Créer un client avec toutes ses informations
-- Lister tous les clients
-- Modifier un client existant
-- Supprimer un client
+
 
 #### 2️⃣ Gestion du catalogue
-**Interface unifiée pour gérer:**
-- Création de produits (référence, nom, description)
-- Ajout de prix avec périodes (prix HT, date début, date fin optionnelle)
-- Association de taux de TVA avec périodes (sélection TVA, date début, date fin)
+
 
 
 
 
 
 #### 3️⃣ Création d'une facture
-**Processus automatisé:**
-1. Sélectionner un client
-2. Définir la date de facturation
-3. Sélectionner un produit → **Le prix actif à cette date s'affiche automatiquement**
-4. Ajouter la quantité
-5. Cliquer sur "Ajouter" 
-6. Répéter pour d'autres lignes
-7. Créer la facture → **Tous les montants sont calculés et figés**
 
-**Affichage en temps réel:**
-- Message : "✓ Prix actuel : 100.00 € HT (du 01/01/2024 au 31/12/2024)"
-- Si aucun prix actif : "Aucun prix actif trouvé pour ce produit à cette date"
-- Bouton "Ajouter" désactivé tant qu'aucun prix actif n'est disponible
+
+
 
 #### 4️⃣ Consultation d'une facture
-**Affichage des données figées:**
-- Informations client complètes
-- Dates de facturation et d'échéance
-- **Désignations figées** (nom du produit au moment de la création)
-- **Prix figés** (prix actif au moment de la création)
-- **Taux de TVA figés** (taux actif au moment de la création)
-- **Totaux figés** (HT, TVA, TTC calculés une seule fois)
 
 
 
