@@ -120,7 +120,7 @@ Toutes les versions sont gérées par Spring Boot parent:
 Fichier `application.properties`:
 ```properties
 # Base de données
-spring.datasource.url=jdbc:postgresql://localhost:5432/okaya_db
+spring.datasource.url=jdbc:postgresql://localhost:5432/okayaFacture
 spring.datasource.username=postgres
 spring.datasource.password=12345
 
@@ -129,4 +129,3 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 ```
 
-C'est tout! Spring Boot configure automatiquement le reste.
