@@ -1,4 +1,4 @@
-# Guide de Démarrage Rapide - Okaya
+# Guide de Démarrage Rapide - Okayo
 
 ## Étapes d'installation et de lancement
 

@@ -1,4 +1,4 @@
-# Application Okaya - Gestion de Factures
+# Application Okayo - Gestion de Factures
 
 Application web complète pour la gestion de factures avec:
 - **Backend**: Spring Boot + PostgreSQL
@@ -20,11 +20,11 @@ Cette application permet de gérer des factures en respectant les contraintes su
 ## Architecture
 
 ```
-okaya/
+okayo/
 ├── backend/          # Spring Boot (Java 17)
 │   ├── src/
 │   │   └── main/
-│   │       ├── java/com/okaya/
+│   │       ├── java/com/okayo/
 │   │       │   ├── model/        # Entités JPA
 │   │       │   ├── repository/   # Repositories
 │   │       │   ├── service/      # Services métier

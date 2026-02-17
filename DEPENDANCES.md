@@ -1,4 +1,4 @@
-# Dépendances Spring Boot - Projet Okaya
+# Dépendances Spring Boot - Projet Okayo
 
 ## Dépendances Maven à installer
 
@@ -120,7 +120,7 @@ Toutes les versions sont gérées par Spring Boot parent:
 Fichier `application.properties`:
 ```properties
 # Base de données
-spring.datasource.url=jdbc:postgresql://localhost:5432/okayaFacture
+spring.datasource.url=jdbc:postgresql://localhost:5432/okayoFacture
 spring.datasource.username=postgres
 spring.datasource.password=12345
 

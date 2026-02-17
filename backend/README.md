@@ -1,4 +1,4 @@
-# Application Okaya - Backend
+# Application Okayo - Backend
 
 ## Description
 Application de gestion de factures avec Spring Boot et PostgreSQL.
@@ -51,12 +51,12 @@ L'application démarre sur le port 8080: http://localhost:8080
 
 ```
 backend/
-├── src/main/java/com/okaya/
+├── src/main/java/com/okayo/
 │   ├── model/           # Entités JPA
 │   ├── repository/      # Repositories JPA
 │   ├── service/         # Services métier
 │   ├── controller/      # Controllers REST
-│   └── OkayaApplication.java
+│   └── OkayoApplication.java
 └── src/main/resources/
     └── application.properties
 ```
