@@ -1,0 +1,65 @@
+<div class="card">
+  <h2>Ajouter un taux de TVA</h2>
+  
+  <div *ngIf="error" class="alert alert-error">{{error}}</div>
+  
+  <form (ngSubmit)="createTVA()">
+    <div class="flex">
+      <div class="form-group" style="flex: 1;">
+        <label>Taux (%) *</label>
+        <input type="number" [(ngModel)]="formData.taux" name="taux" step="0.01" required>
+      </div>
+      
+      <div class="form-group" style="flex: 1;">
+        <label>Date de début *</label>
+        <input type="date" [(ngModel)]="formData.dateDebut" name="dateDebut" required>
+      </div>
+      
+      <div class="form-group" style="flex: 1;">
+        <label>Date de fin</label>
+        <input type="date" [(ngModel)]="formData.dateFin" name="dateFin">
+      </div>
+    </div>
+    
+    <div>
+      <button type="submit" class="btn btn-primary">Créer</button>
+      <button type="button" class="btn btn-secondary" (click)="resetForm()">Annuler</button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Taux de TVA</h2>
+  
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  
+  <table *ngIf="!loading && tvaList.length > 0">
+    <thead>
+      <tr>
+        <th>Taux (%)</th>
+        <th>Date de début</th>
+        <th>Date de fin</th>
+        <th>Statut</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let tva of tvaList">
+        <td><strong>{{tva.taux}}%</strong></td>
+        <td>{{tva.dateDebut | date:'dd/MM/yyyy'}}</td>
+        <td>{{tva.dateFin ? (tva.dateFin | date:'dd/MM/yyyy') : 'Indéfini'}}</td>
+        <td>
+          <span *ngIf="isActif(tva)" style="color: green; font-weight: bold;">✓ Actif</span>
+          <span *ngIf="!isActif(tva)" style="color: gray;">Expiré</span>
+        </td>
+        <td>
+          <button class="btn btn-danger" (click)="deleteTVA(tva.id!)">Supprimer</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <p *ngIf="!loading && tvaList.length === 0" class="text-center">
+    Aucun taux de TVA trouvé
+  </p>
+</div>

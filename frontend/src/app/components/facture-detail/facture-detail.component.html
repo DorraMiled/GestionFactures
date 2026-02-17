@@ -1,0 +1,108 @@
+<div class="card" *ngIf="facture">
+  <div class="flex-between mb-2">
+    <h1>📄 Facture {{facture.reference}}</h1>
+    <div>
+      <button class="btn btn-primary" (click)="print()">🖨️ Imprimer</button>
+      <a routerLink="/factures" class="btn btn-secondary">← Retour</a>
+    </div>
+  </div>
+
+ 
+
+  <!-- Informations client -->
+  <div class="mb-2">
+    <h3>👤 Client</h3>
+    <div style="padding: 1rem; background: #f5f5f5; border-radius: 4px;">
+      <p><strong>{{facture.client.nom}}</strong></p>
+      <p *ngIf="facture.client.codeClient">Code: {{facture.client.codeClient}}</p>
+      <p *ngIf="facture.client.adresse">{{facture.client.adresse}}</p>
+      <p>
+        <span *ngIf="facture.client.ville">{{facture.client.ville}}</span>
+        <span *ngIf="facture.client.codePostal"> {{facture.client.codePostal}}</span>
+        <span *ngIf="facture.client.pays"> - {{facture.client.pays}}</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Dates -->
+  <div class="flex mb-2">
+    <div style="flex: 1;">
+      <strong>📅 Date de facturation:</strong><br>
+      {{facture.dateFacturation | date:'dd/MM/yyyy'}}
+    </div>
+    <div style="flex: 1;" *ngIf="facture.dateEcheance">
+      <strong>📅 Date d'échéance:</strong><br>
+      {{facture.dateEcheance | date:'dd/MM/yyyy'}}
+    </div>
+  </div>
+
+  <!-- Lignes de facture -->
+  <h4>📋Montants exprimés en Euros</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Désignation</th>
+        <th style="text-align: center;">Quantité</th>
+        <th style="text-align: right;">Prix unitaire HT</th>
+        <th style="text-align: right;">Total HT</th>
+        <th style="text-align: center;">Taux TVA</th>
+        <th style="text-align: right;">Total TTC</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ligne of facture.lignes">
+        <td>
+          <strong>{{ligne.designation}}</strong>
+          <br><small style="color: #666;">Réf: {{ligne.produit.reference}}</small>
+        </td>
+        <td style="text-align: center;">{{ligne.quantite}}</td>
+        <td style="text-align: right;">{{ligne.prixUnitaireHT | number:'1.2-2'}} €</td>
+        <td style="text-align: right;"><strong>{{ligne.totalHT | number:'1.2-2'}} €</strong></td>
+        <td style="text-align: center;">{{ligne.tauxTVA}} %</td>
+        <td style="text-align: right;"><strong>{{ligne.totalTTC | number:'1.2-2'}} €</strong></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Totaux -->
+  <div style="margin-top: 2rem; padding: 1rem; background: #e3f2fd; border-radius: 4px;">
+    <h3>💰 Totaux (figés)</h3>
+    <div style="display: flex; justify-content: flex-end; gap: 2rem; margin-top: 1rem;">
+      <div style="text-align: right;">
+        <div style="margin-bottom: 0.5rem;">
+          <span style="font-weight: bold;">Total HT:</span>
+          <span style="margin-left: 1rem; font-size: 1.1rem;">{{facture.totalHT | number:'1.2-2'}} €</span>
+        </div>
+        <div style="margin-bottom: 0.5rem;">
+          <span style="font-weight: bold;">Total TVA:</span>
+          <span style="margin-left: 1rem; font-size: 1.1rem;">{{facture.totalTVA | number:'1.2-2'}} €</span>
+        </div>
+        <div style="border-top: 2px solid #1976d2; padding-top: 0.5rem;">
+          <span style="font-weight: bold; font-size: 1.2rem;">Total TTC:</span>
+          <span style="margin-left: 1rem; font-size: 1.5rem; font-weight: bold; color: #1976d2;">
+            {{facture.totalTTC | number:'1.2-2'}} €
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+</div>
+
+<div class="card" *ngIf="loading">
+  <div class="loading">Chargement...</div>
+</div>
+
+<div class="card" *ngIf="error">
+  <div class="alert alert-error">{{error}}</div>
+  <a routerLink="/factures" class="btn btn-secondary">← Retour</a>
+</div>
+
+<style>
+  @media print {
+    .btn {
+      display: none;
+    }
+  }
+</style>

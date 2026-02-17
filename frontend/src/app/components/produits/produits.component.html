@@ -1,0 +1,63 @@
+<div class="card">
+  <h2>{{isEditing ? 'Modifier' : 'Ajouter'}} un produit</h2>
+  
+  <div *ngIf="error" class="alert alert-error">{{error}}</div>
+  
+  <form (ngSubmit)="saveProduit()">
+    <div class="form-group">
+      <label>Référence *</label>
+      <input type="text" [(ngModel)]="formData.reference" name="reference" required>
+    </div>
+    
+    <div class="form-group">
+      <label>Nom *</label>
+      <input type="text" [(ngModel)]="formData.nom" name="nom" required>
+    </div>
+    
+    <div class="form-group">
+      <label>Description</label>
+      <textarea [(ngModel)]="formData.description" name="description" rows="3"></textarea>
+    </div>
+    
+    <div>
+      <button type="submit" class="btn btn-primary">
+        {{isEditing ? 'Modifier' : 'Créer'}}
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="resetForm()">
+        Annuler
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Catalogue de produits</h2>
+  
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  
+  <table *ngIf="!loading && produits.length > 0">
+    <thead>
+      <tr>
+        <th>Référence</th>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let produit of produits">
+        <td>{{produit.reference}}</td>
+        <td>{{produit.nom}}</td>
+        <td>{{produit.description}}</td>
+        <td>
+          <button class="btn btn-primary" (click)="editProduit(produit)">Modifier</button>
+          <button class="btn btn-danger" (click)="deleteProduit(produit.id!)">Supprimer</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <p *ngIf="!loading && produits.length === 0" class="text-center">
+    Aucun produit trouvé
+  </p>
+</div>

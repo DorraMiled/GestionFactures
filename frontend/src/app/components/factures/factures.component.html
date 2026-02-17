@@ -1,0 +1,141 @@
+<div class="flex-between mb-2">
+  <h2>Gestion des factures</h2>
+  <button class="btn btn-success" (click)="showForm = !showForm">
+    {{showForm ? 'Annuler' : 'Nouvelle facture'}}
+  </button>
+</div>
+
+<div class="card" *ngIf="showForm">
+  <h2>Créer une facture</h2>
+  
+  <div *ngIf="error" class="alert alert-error">{{error}}</div>
+  
+  <form (ngSubmit)="createFacture()">
+    <div class="flex">
+      <div class="form-group" style="flex: 1;">
+        <label>Référence *</label>
+        <input type="text" [(ngModel)]="formData.reference" name="reference" required>
+      </div>
+      
+      <div class="form-group" style="flex: 1;">
+        <label>Client *</label>
+        <select [(ngModel)]="formData.clientId" name="clientId" required>
+          <option value="">Sélectionner un client</option>
+          <option *ngFor="let client of clients" [value]="client.id">
+            {{client.nom}} ({{client.codeClient}})
+          </option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="flex">
+      <div class="form-group" style="flex: 1;">
+        <label>Date de facturation *</label>
+        <input type="date" [(ngModel)]="formData.dateFacturation" name="dateFacturation" required>
+      </div>
+      
+      <div class="form-group" style="flex: 1;">
+        <label>Date d'échéance</label>
+        <input type="date" [(ngModel)]="formData.dateEcheance" name="dateEcheance">
+      </div>
+    </div>
+    
+    <h3>Lignes de facture</h3>
+    
+    <div class="flex" style="align-items: flex-end;">
+      <div class="form-group" style="flex: 2;">
+        <label>Produit</label>
+        <select [(ngModel)]="currentLigne.produitId" name="produitId" (change)="loadPrixActif()">
+          <option value="">Sélectionner un produit</option>
+          <option *ngFor="let produit of produits" [value]="produit.id">
+            {{produit.nom}} ({{produit.reference}})
+          </option>
+        </select>
+        <div *ngIf="currentLigne.prixInfo" style="margin-top: 0.5rem; padding: 0.5rem; background: #e8f5e9; border-radius: 4px;">
+          <small style="color: #2e7d32;">
+            ✓ Prix actuel : <strong>{{currentLigne.prixInfo.prixHT | number:'1.2-2'}} € HT</strong>
+            <span *ngIf="currentLigne.prixInfo.dateDebut">
+              (du {{currentLigne.prixInfo.dateDebut | date:'dd/MM/yyyy'}} 
+              {{currentLigne.prixInfo.dateFin ? 'au ' + (currentLigne.prixInfo.dateFin | date:'dd/MM/yyyy') : ''}})
+            </span>
+          </small>
+        </div>
+      </div>
+      
+      <div class="form-group" style="flex: 1;">
+        <label>Quantité</label>
+        <input type="number" [(ngModel)]="currentLigne.quantite" name="quantite" min="1">
+      </div>
+      
+      <button type="button" class="btn btn-primary" (click)="addLigne()" [disabled]="!currentLigne.prixInfo">
+        Ajouter
+      </button>
+    </div>
+    
+    <table *ngIf="formData.lignes.length > 0" style="margin-top: 1rem;">
+      <thead>
+        <tr>
+          <th>Produit</th>
+          <th>Quantité</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ligne of formData.lignes; let i = index">
+          <td>{{ligne.produit.nom}}</td>
+          <td>{{ligne.quantite}}</td>
+          <td>
+            <button type="button" class="btn btn-danger" (click)="removeLigne(i)">
+              Supprimer
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <div style="margin-top: 1.5rem;">
+      <button type="submit" class="btn btn-success">Créer la facture</button>
+      <button type="button" class="btn btn-secondary" (click)="showForm = false; resetForm()">
+        Annuler
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Liste des factures</h2>
+  
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  
+  <table *ngIf="!loading && factures.length > 0">
+    <thead>
+      <tr>
+        <th>Référence</th>
+        <th>Client</th>
+        <th>Date</th>
+        <th>Total HT</th>
+        <th>Total TVA</th>
+        <th>Total TTC</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let facture of factures">
+        <td>{{facture.reference}}</td>
+        <td>{{facture.client.nom}}</td>
+        <td>{{facture.dateFacturation | date:'dd/MM/yyyy'}}</td>
+        <td>{{facture.totalHT | number:'1.2-2'}} €</td>
+        <td>{{facture.totalTVA | number:'1.2-2'}} €</td>
+        <td><strong>{{facture.totalTTC | number:'1.2-2'}} €</strong></td>
+        <td>
+          <a [routerLink]="['/factures', facture.id]" class="btn btn-primary">Voir</a>
+          <button class="btn btn-danger" (click)="deleteFacture(facture.id!)">Supprimer</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <p *ngIf="!loading && factures.length === 0" class="text-center">
+    Aucune facture trouvée
+  </p>
+</div>

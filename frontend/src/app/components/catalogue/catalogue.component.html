@@ -1,0 +1,201 @@
+<div class="card">
+  <h2>{{isEditingProduit ? 'Modifier' : 'Ajouter'}} un produit</h2>
+  
+  <div *ngIf="error" class="alert alert-error">{{error}}</div>
+  
+  <form (ngSubmit)="saveProduit()">
+    <div class="form-group">
+      <label>Référence *</label>
+      <input type="text" [(ngModel)]="formProduit.reference" name="reference" required>
+    </div>
+    
+    <div class="form-group">
+      <label>Nom *</label>
+      <input type="text" [(ngModel)]="formProduit.nom" name="nom" required>
+    </div>
+    
+    <div class="form-group">
+      <label>Description</label>
+      <textarea [(ngModel)]="formProduit.description" name="description" rows="2"></textarea>
+    </div>
+    
+    <div>
+      <button type="submit" class="btn btn-primary">
+        {{isEditingProduit ? 'Modifier' : 'Créer'}}
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="resetProduitForm()">
+        Annuler
+      </button>
+    </div>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Catalogue de produits</h2>
+  
+  <div *ngIf="loading" class="loading">Chargement...</div>
+  
+  <table *ngIf="!loading && produits.length > 0">
+    <thead>
+      <tr>
+        <th>Référence</th>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let produit of produits" [class.selected]="selectedProduit?.id === produit.id" 
+          (click)="selectProduit(produit)" style="cursor: pointer;">
+        <td>{{produit.reference}}</td>
+        <td>{{produit.nom}}</td>
+        <td>{{produit.description}}</td>
+        <td>
+          <button class="btn btn-primary" (click)="editProduit(produit); $event.stopPropagation()">
+            Modifier
+          </button>
+          <button class="btn btn-danger" (click)="deleteProduit(produit.id!); $event.stopPropagation()">
+            Supprimer
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <p *ngIf="!loading && produits.length === 0" class="text-center">
+    Aucun produit trouvé
+  </p>
+</div>
+
+<!-- Détails du produit sélectionné -->
+<div *ngIf="selectedProduit" class="card" style="background-color: #f8f9fa;">
+  <h2>📦 Détails : {{selectedProduit.nom}}</h2>
+  
+  <!-- Prix -->
+  <div class="mb-2">
+    <div class="flex-between">
+      <h3>💰 Prix</h3>
+      <button class="btn btn-success" (click)="showPrixForm = !showPrixForm">
+        {{showPrixForm ? 'Annuler' : 'Ajouter un prix'}}
+      </button>
+    </div>
+    
+    <div *ngIf="showPrixForm" style="margin: 1rem 0; padding: 1rem; background: white; border-radius: 4px;">
+      <form (ngSubmit)="savePrix()">
+        <div class="flex">
+          <div class="form-group" style="flex: 1;">
+            <label>Prix HT (€) *</label>
+            <input type="number" [(ngModel)]="formPrix.prixHT" name="prixHT" step="0.01" required>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label>Date début *</label>
+            <input type="date" [(ngModel)]="formPrix.dateDebut" name="dateDebut" required>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label>Date fin</label>
+            <input type="date" [(ngModel)]="formPrix.dateFin" name="dateFin">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success">Enregistrer le prix</button>
+      </form>
+    </div>
+    
+    <table *ngIf="prixList.length > 0" style="margin-top: 1rem;">
+      <thead>
+        <tr>
+          <th>Prix HT</th>
+          <th>Date début</th>
+          <th>Date fin</th>
+          <th>Statut</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let prix of prixList">
+          <td><strong>{{prix.prixHT | number:'1.2-2'}} €</strong></td>
+          <td>{{prix.dateDebut | date:'dd/MM/yyyy'}}</td>
+          <td>{{prix.dateFin ? (prix.dateFin | date:'dd/MM/yyyy') : 'Actif'}}</td>
+          <td>
+            <span *ngIf="!prix.dateFin" style="color: green; font-weight: bold;">✓ Actif</span>
+            <span *ngIf="prix.dateFin" style="color: gray;">Expiré</span>
+          </td>
+          <td>
+            <button class="btn btn-danger" (click)="deletePrix(prix.id!)">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="prixList.length === 0" style="color: #999; margin-top: 0.5rem;">
+      Aucun prix défini
+    </p>
+  </div>
+  
+  <!-- TVA -->
+  <div class="mb-2">
+    <div class="flex-between">
+      <h3>📊 TVA</h3>
+      <button class="btn btn-success" (click)="showTVAForm = !showTVAForm">
+        {{showTVAForm ? 'Annuler' : 'Ajouter une TVA'}}
+      </button>
+    </div>
+    
+    <div *ngIf="showTVAForm" style="margin: 1rem 0; padding: 1rem; background: white; border-radius: 4px;">
+      <form (ngSubmit)="saveProduitTVA()">
+        <div class="flex">
+          <div class="form-group" style="flex: 1;">
+            <label>Taux de TVA *</label>
+            <select [(ngModel)]="formTVA.tvaId" name="tvaId" required>
+              <option value="">Sélectionner</option>
+              <option *ngFor="let tva of tvaList" [value]="tva.id">{{tva.taux}}%</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label>Date début *</label>
+            <input type="date" [(ngModel)]="formTVA.dateDebut" name="dateDebut" required>
+          </div>
+          <div class="form-group" style="flex: 1;">
+            <label>Date fin</label>
+            <input type="date" [(ngModel)]="formTVA.dateFin" name="dateFin">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-success">Enregistrer la TVA</button>
+      </form>
+    </div>
+    
+    <table *ngIf="produitTvaList.length > 0" style="margin-top: 1rem;">
+      <thead>
+        <tr>
+          <th>Taux</th>
+          <th>Date début</th>
+          <th>Date fin</th>
+          <th>Statut</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ptva of produitTvaList">
+          <td><strong>{{ptva.tva.taux}}%</strong></td>
+          <td>{{ptva.dateDebut | date:'dd/MM/yyyy'}}</td>
+          <td>{{ptva.dateFin ? (ptva.dateFin | date:'dd/MM/yyyy') : 'Actif'}}</td>
+          <td>
+            <span *ngIf="!ptva.dateFin" style="color: green; font-weight: bold;">✓ Actif</span>
+            <span *ngIf="ptva.dateFin" style="color: gray;">Expiré</span>
+          </td>
+          <td>
+            <button class="btn btn-danger" (click)="deleteProduitTVA(ptva.id!)">Supprimer</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p *ngIf="produitTvaList.length === 0" style="color: #999; margin-top: 0.5rem;">
+      Aucune TVA définie
+    </p>
+  </div>
+</div>
+
+<style>
+  tr.selected {
+    background-color: #e3f2fd !important;
+    font-weight: bold;
+  }
+</style>
